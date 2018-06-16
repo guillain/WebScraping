@@ -2,9 +2,11 @@
 # @Subject: Scraping collect
 # @Author: Guillain
 # @Email: guillain@gmail.com
+import os
 import sys
 import getopt
 import time
+import re
 import datetime
 import bs4
 import requests
@@ -27,9 +29,20 @@ CollectName = "coinmarketcap"
 CollectUrl = "https://coinmarketcap.com/fr/all/views/all/"
 CollectReport = collections.namedtuple(CollectName, 'timestamp, name, symbol, marketcap, price, volume')
 
+def help():
+    print( 'program.py '
+           '-t <loop timer> '
+           '-l <row limit> '
+           '-o <order> '
+           '-s <timeserie file> '
+           '-r <realtime file> '
+           '-D <output dir> '
+           '-h '
+    )
 
 # Start Main program
 def main(argv):
+    report_dir = REPORT_DIR
     loop_timer = LOOP_TIMER
     row_limit = ROW_LIMIT
     realtime_file = CSF_FILE_realtime
@@ -37,12 +50,13 @@ def main(argv):
 
     # Get params
     try:
-        opts, args = getopt.getopt(argv,"hr:s:t:l:",["timer=","rfile=","sfile="])
-
+        opts, args = getopt.getopt(argv,"hr:s:t:l:o:D:",["timer=","rfile=","sfile=","dir=","limit=","order="])
         for opt, arg in opts:
             if opt == '-h':
-                print('program.py -t <loop timer> -l <row limit> -s <timeserie file> -r <realtime file>')
+                help()
                 sys.exit()
+            elif opt in ("-D", "--dir"):
+                report_dir = arg
             elif opt in ("-r", "--rfile"):
                 realtime_file = arg
             elif opt in ("-s", "--sfile"):
@@ -51,27 +65,34 @@ def main(argv):
                 loop_timer = int(arg)
             elif opt in ("-l", "--limit"):
                 row_limit = int(arg)
+            elif opt in ("-o", "--order"):
+                row_order = int(arg)
     except getopt.GetoptError:
-        print('program.py -t <loop timer> -l <row limit>  -s <timeserie file> -r <realtime file>')
+        help()
         sys.exit(2)
 
     # Init the headers
     print_the_header()
-    timeserial_file_desc = open(timeserial_file, 'w')
 
-    # Timer loop
+    # Timer = loop
     try:
         while True:
+            # save the loop starting time
+            time_done = time.time() + loop_timer
+
             html = get_html_from_web()
             reports = get_reports_from_html(html,row_limit)
             print_report(reports)
-            save_report_realtime(realtime_file, reports)
-            save_report_timeserial(timeserial_file, reports)
+            save_report(report_dir, realtime_file, reports, 'group')
+            save_report(report_dir, timeserial_file, reports, '')
             #print_plot(timeserial_file, reports)
-            time.sleep(loop_timer)
+
+            # check timer and wait if necessary
+            while(time.time() < time_done):
+                print(time.strftime("%Y-%m-%d %H:%M:%S"))
+                time.sleep(1)
     except KeyboardInterrupt:
         print('Manual break by user')
-    timeserial_file_desc.close()
 
 
 def print_the_header():
@@ -102,27 +123,39 @@ def print_plot(file, reports):
         plt.legend()
         plt.show()
 
-def save_report_realtime(file, reports):
-    with open('{}/{}'.format(REPORT_DIR,file), 'w') as f:
-        for report in reports:
-            f.write('{},{},{},{},{}\n'.format(
-                report.name,
-                report.symbol,
-                report.marketcap,
-                report.price,
-                report.volume
-            ))
-
-def save_report_timeserial(file, reports):
+def save_report(dir, file, reports, option):
     for report in reports:
-        with open('{}/{}-{}'.format(REPORT_DIR,report.name,file), 'a') as f:
-            f.write('{},{},{},{},{}\n'.format(
-                report.timestamp,
-                report.symbol,
-                report.marketcap,
-                report.price,
-                report.volume
-            ))
+        report_name = report.name
+        if 'group' in option:
+            report_name = 'Global'
+        filename = '{}/{}-{}'.format(dir, report_name,file)
+
+        if not os.path.isfile(filename):
+            save_report_header(filename)
+
+        save_report_content(filename, report)
+
+def save_report_header(filename):
+    with open(filename, 'w') as f:
+        f.write('{},{},{},{},{}\n'.format(
+            "timestamp",
+            "name",
+            "symbol",
+            "marketcap",
+            "price",
+            "volume"
+        ))
+
+def save_report_content(filename, report):
+    with open(filename, 'a') as f:
+        f.write('{},{},{},{},{}\n'.format(
+            report.timestamp,
+            report.name,
+            report.symbol,
+            report.marketcap,
+            report.price,
+            report.volume
+        ))
 
 def get_html_from_web():
     response = requests.get(CollectUrl)
@@ -157,10 +190,16 @@ def cleanup_text(text):
     if not text:
         return text
 
-    text = text.strip()
+    text = re.sub('[^A-Za-z0-9]+', '', text)
+
+    """text = text.strip()
     text = text.replace('$','')
     text = text.replace(',','')
+    text = text.replace(' ', '_')
+    text = text.replace('\\', '')
+    text = text.replace('/', '')
     text = text.replace('\n', '')
+    """
     return text
 
 if __name__ == '__main__':

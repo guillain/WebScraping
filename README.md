@@ -38,7 +38,7 @@ Using the indexes for the parameters
 
 Long name as parameters
 
-`python program.py --timer=60 --limit=10 --sfile=timeserial_file.csv --rfile=realtime_file.csv`
+`python program.py --timer=60 --limit=10 --order=Prix --sfile=timeserial_file.csv --rfile=realtime_file.csv`
 
 ## Output files
 The generates files are stored by default in:
