@@ -1,5 +1,5 @@
 #!/bin/python
-# @Subject: Scraping collect
+# @Subject: WebScraping : CSV record : Graph
 # @Author: Guillain
 # @Email: guillain@gmail.com
 import os
@@ -7,14 +7,12 @@ import sys
 import getopt
 import time
 import re
-#import datetime
 from datetime import datetime
 import bs4
 import requests
 import collections
 
 import matplotlib.pyplot as plt
-import matplotlib.animation as anim
 import numpy as np
 
 # Constantes definition
