@@ -1,5 +1,14 @@
 # WebScraping
-Provide an example on the 'how to' scrap a web site... financial to generate my own report 
+Provide an example on the 'how to' scrap a web site... to generate your own reports.
+Default output are:
+* CSV files:
+  * one file by name
+  * one global file
+* Graph updated
+  * Price
+  * Volume
+  
+Up to you to adapt to your need ;-)
 
 ## Fast track
 ```
@@ -21,7 +30,7 @@ Move in the folder
 Install requirements
 `pip install -r requirements.txt`
 
-## Excution
+## Execution
 Short and with the default parameters
 
 `python program.py`
@@ -33,6 +42,7 @@ Short and with the default parameters
 * -D / --dir: output directory for the CSV files
 * -s / --sfile : output file for the timeserial record
 * -r / --rfile : output file for the realtime record
+* -p / --plot : to deactivate the graph generation
 
 Using the indexes for the parameters
 
@@ -55,9 +65,9 @@ Provide a file this increase with each collect
 *{market}* is the collected name for the considered sequence
 
 ### Realtime
-Provide a file with only the last collected data into
+Provide a file with all collected data 
 
-`./reports/realtime_report.csv`
+`./reports/Global-realtime_report.csv`
 
 ## Python version
 Validated on the following Python versions:
