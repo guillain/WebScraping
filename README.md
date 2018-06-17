@@ -29,6 +29,8 @@ Short and with the default parameters
 ## Parameters
 * -t / --timer: loop frequency, default 5s
 * -l / --limit: number of row collected, default 10
+* -o / --order: to order the values
+* -D / --dir: output directory for the CSV files
 * -s / --sfile : output file for the timeserial record
 * -r / --rfile : output file for the realtime record
 
@@ -60,7 +62,9 @@ Provide a file with only the last collected data into
 ## Python version
 Validated on the following Python versions:
 * Python 2.7
-* Python 3.6
+
+Issued
+* Python 3.6: on datetime
 
 ## Windows users
 1/ From Windows Explorer

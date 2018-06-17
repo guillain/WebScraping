@@ -7,19 +7,21 @@ import sys
 import getopt
 import time
 import re
-import datetime
+#import datetime
+from datetime import datetime
 import bs4
 import requests
 import collections
 
 import matplotlib.pyplot as plt
+import matplotlib.animation as anim
 import numpy as np
-from matplotlib.dates import DayLocator, HourLocator, DateFormatter, drange
 
 # Constantes definition
 LOOP_TIMER = 5 # (s)
 ROW_LIMIT = 10
 REPORT_DIR = "reports"
+PLOT_BOOL = True
 CSF_FILE_realtime = "realtime_report.csv"
 CSF_FILE_timeserial = "timeserial_report.csv"
 timeserial_file = ""
@@ -37,6 +39,7 @@ def help():
            '-s <timeserie file> '
            '-r <realtime file> '
            '-D <output dir> '
+            '-p '
            '-h '
     )
 
@@ -47,10 +50,12 @@ def main(argv):
     row_limit = ROW_LIMIT
     realtime_file = CSF_FILE_realtime
     timeserial_file = CSF_FILE_timeserial
+    plot_bool = PLOT_BOOL
+    figure = plt.figure()
 
     # Get params
     try:
-        opts, args = getopt.getopt(argv,"hr:s:t:l:o:D:",["timer=","rfile=","sfile=","dir=","limit=","order="])
+        opts, args = getopt.getopt(argv,"hr:s:t:l:o:D:p",["plot", "timer=","rfile=","sfile=","dir=","limit=","order="])
         for opt, arg in opts:
             if opt == '-h':
                 help()
@@ -67,12 +72,18 @@ def main(argv):
                 row_limit = int(arg)
             elif opt in ("-o", "--order"):
                 row_order = int(arg)
+            elif opt in ("-p", "--plot"):
+                plot_bool = False
     except getopt.GetoptError:
         help()
         sys.exit(2)
 
     # Init the headers
     print_the_header()
+
+    # Init plot
+    if plot_bool:
+        init_plot(figure, row_limit)
 
     # Timer = loop
     try:
@@ -85,7 +96,8 @@ def main(argv):
             print_report(reports)
             save_report(report_dir, realtime_file, reports, 'group')
             save_report(report_dir, timeserial_file, reports, '')
-            #print_plot(timeserial_file, reports)
+            if plot_bool:
+                print_plot(timeserial_file, reports)
 
             # check timer and wait if necessary
             while(time.time() < time_done):
@@ -93,7 +105,6 @@ def main(argv):
                 time.sleep(1)
     except KeyboardInterrupt:
         print('Manual break by user')
-
 
 def print_the_header():
     print('-----------------------------------')
@@ -113,15 +124,42 @@ def print_report(reports):
             report.volume
         ))
 
+def init_plot(figure, row_limit):
+    plt.ion()
+    plt.show()
+
+    ax = figure.add_subplot(211)
+    plt.subplot(211)
+    plt.xlabel('Timestamp')
+    plt.ylabel('Price')
+    plt.title('Top {} of Price'.format(row_limit))
+    #plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+    ax = figure.add_subplot(212)
+    plt.subplot(212)
+    plt.xlabel('Timestamp')
+    plt.ylabel('Volume')
+    plt.title('Top {} of Volume'.format(row_limit))
+    #plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
 def print_plot(file, reports):
-    for report in reports:
-        timestamp, name, marketcap, price, volume = np.loadtxt('{}/{}-{}'.format(REPORT_DIR, report.name, file), delimiter=',', unpack=True)
-        plt.plot(datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S'), price, label='Loaded from file!')
-        plt.xlabel('timestamp')
-        plt.ylabel('price')
-        plt.title('price of ')
-        plt.legend()
-        plt.show()
+    for index, report in enumerate(reports):
+        timestamp, name, marketcap, price, volume = np.loadtxt('{}/{}-{}'.format(REPORT_DIR, report.name, file),
+                                                               dtype={'names': ('timestamp', 'name', 'marketcap', 'price', 'volume'),
+                                                                      'formats': ('S26', 'S32', 'S32', 'f4', 'f4')},
+                                                               delimiter=',',
+                                                               unpack=True,
+                                                               skiprows=1)
+        dates_list = [datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f') for ts in timestamp]
+
+        plt.subplot(211)
+        plt.plot(dates_list, price, label=report.name)
+
+        plt.subplot(212)
+        plt.plot(dates_list, volume, label=report.name)
+
+    plt.draw_all()
+    plt.pause(.001)
 
 def save_report(dir, file, reports, option):
     for report in reports:
@@ -163,7 +201,7 @@ def get_html_from_web():
 
 def get_reports_from_html(html,limit):
     reports = []
-    timestamp = datetime.datetime.now()
+    timestamp = datetime.now()
     soup = bs4.BeautifulSoup(html, 'html.parser')
     table = soup.find(id='currencies-all')
     table_body = table.find('tbody')
