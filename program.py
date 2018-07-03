@@ -20,6 +20,7 @@ LOOP_TIMER = 5 # (s)
 ROW_LIMIT = 10
 REPORT_DIR = "reports"
 PLOT_BOOL = True
+FILE_BOOL = True
 CSF_FILE_realtime = "realtime_report.csv"
 CSF_FILE_timeserial = "timeserial_report.csv"
 timeserial_file = ""
@@ -31,14 +32,15 @@ CollectReport = collections.namedtuple(CollectName, 'timestamp, name, symbol, ma
 
 def help():
     print( 'program.py '
-           '-t <loop timer> '
-           '-l <row limit> '
-           '-o <order> '
-           '-s <timeserie file> '
-           '-r <realtime file> '
-           '-D <output dir> '
-            '-p '
-           '-h '
+           '-t / --timer= <loop timer> '
+           '-l / --limit= <row limit> '
+           '-o / --order= <order> '
+           '-s / --sfile= <timeserie file> '
+           '-r / --rfile= <realtime file> '
+           '-d / --dir= <output dir> '
+           '-P / --noplot '
+           '-F / --nofile '
+           '-h // --help '
     )
 
 # Start Main program
@@ -49,16 +51,17 @@ def main(argv):
     realtime_file = CSF_FILE_realtime
     timeserial_file = CSF_FILE_timeserial
     plot_bool = PLOT_BOOL
+    file_bool = FILE_BOOL
     figure = plt.figure()
 
     # Get params
     try:
-        opts, args = getopt.getopt(argv,"hr:s:t:l:o:D:p",["plot", "timer=","rfile=","sfile=","dir=","limit=","order="])
+        opts, args = getopt.getopt(argv,"hr:s:t:l:o:d:PF",["help", "noplot", "nofile", "timer=","rfile=","sfile=","dir=","limit=","order="])
         for opt, arg in opts:
-            if opt == '-h':
+            if opt in ("-d", "--help"):
                 help()
                 sys.exit()
-            elif opt in ("-D", "--dir"):
+            elif opt in ("-d", "--dir"):
                 report_dir = arg
             elif opt in ("-r", "--rfile"):
                 realtime_file = arg
@@ -70,8 +73,10 @@ def main(argv):
                 row_limit = int(arg)
             elif opt in ("-o", "--order"):
                 row_order = int(arg)
-            elif opt in ("-p", "--plot"):
+            elif opt in ("-P", "--noplot"):
                 plot_bool = False
+            elif opt in ("-F", "--nofile"):
+                file_bool = False
     except getopt.GetoptError:
         help()
         sys.exit(2)
@@ -92,10 +97,10 @@ def main(argv):
             html = get_html_from_web()
             reports = get_reports_from_html(html,row_limit)
             print_report(reports)
-            save_report(report_dir, realtime_file, reports, 'group')
-            save_report(report_dir, timeserial_file, reports, '')
-            if plot_bool:
-                print_plot(timeserial_file, reports)
+
+            if file_bool: save_report(report_dir, realtime_file, reports, 'group')
+            if file_bool: save_report(report_dir, timeserial_file, reports, '')
+            if plot_bool: print_plot(timeserial_file, reports)
 
             # check timer and wait if necessary
             while(time.time() < time_done):
