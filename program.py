@@ -80,13 +80,13 @@ class App:
 def collector(app):
     try:
             #while True:
-            time_done = time.time() + app.loop_timer_collector
+            app.time_done_collector = time.time() + app.loop_timer_collector
 
             app.reports = app.scraping.get_reports(app.scraping.get_html(), app.row_limit)
             app.scraping.display(app.reports)
             app.report.save(app.report.file, app.reports)
 
-            while time.time() < time_done:
+            while time.time() < app.time_done_collector:
                 print(time.strftime("%Y-%m-%d %H:%M:%S"))
                 time.sleep(1)
     except KeyboardInterrupt:
@@ -95,13 +95,14 @@ def collector(app):
 def display(app):
     try:
             #while True:
-            time_done = time.time() + app.loop_timer_display
+            app.time_done_display = time.time() + app.loop_timer_display
 
             app.markets = app.report.data_mapping(app.markets, app.reports)
-            #app.report.display(app.markets)
+            print(app.markets)
+            app.report.display(app.markets)
             app.plot.display_file(app.report.file, app.reports)
 
-            while time.time() < time_done:
+            while time.time() < app.time_done_display:
                 print(time.strftime("%Y-%m-%d %H:%M:%S"))
                 time.sleep(1)
     except KeyboardInterrupt:
@@ -110,16 +111,23 @@ def display(app):
 def main(argv):
     app = App(default, argv)
     app.markets = {}
+
+    """
+    data = app.report.load(app.report.report_dir)
+    print(data)
+    for entry in data:
+        print ', '.join(entry)
+    """
     try:
         while True:
             collector(app)
             display(app)
-            """
-            t_collector = threading.Thread(name='collector', target=collector, args=app)
-            t_collector.start()
-            t_display = threading.Thread(name='display', target=display, args=app)
-            t_display.start()
-            """
+
+            #t_collector = threading.Thread(name='collector', target=collector, args=app)
+            #t_collector.start()
+            #t_display = threading.Thread(name='display', target=display, args=app)
+            #t_display.start()
+
     except KeyboardInterrupt:
         print('Manual break by user')
 

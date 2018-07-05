@@ -1,5 +1,6 @@
-import os
 import csv
+from os import listdir, path
+from os.path import isfile, join
 
 class Report:
     def __init__(self, default):
@@ -13,19 +14,27 @@ class Report:
         return False
 
     def display(self, reports):
-        for report in reports:
-            print('{} \t {} \t {} \t {} \t {} \t {}'.format(
-                report.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
-                report.name,
-                report.symbol,
-                report.marketcap,
-                report.price,
-                report.volume
-            ))
+        for report_name in reports:
+            print(report_name)
+            for report in reports[report_name]:
+                print('{} \t {} \t {} \t {} \t {} \t {}'.format(
+                    report.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                    report.name,
+                    report.symbol,
+                    report.marketcap,
+                    report.price,
+                    report.volume
+                ))
 
-    def load(self, filename):
-        with open(filename, 'rb') as csvfile:
-            data = csv.reader(csvfile, delimiter=',')
+
+    def load(self, dir):
+        onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f))]
+        data = []
+        for file in onlyfiles:
+            filename = '{}/{}'.format(dir, file)
+            with open(filename, 'rb') as csvfile:
+                data.append(csv.reader(csvfile, delimiter=','))
+
         return data
 
     def save_header(self, filename):
@@ -56,7 +65,7 @@ class Report:
         if self.check_exec:
             for report in reports:
                 filename = '{}/{}{}'.format(self.report_dir, report.name, file)
-                if not os.path.isfile(filename):
+                if not path.isfile(filename):
                     self.save_header(filename)
                 self.save_content(filename, report)
 
@@ -66,9 +75,9 @@ class Report:
                 markets[report.name] = []
             markets[report.name].append(report)
 
-        """for key, value in markets.items():
-            print(key, value)
-            for v in value:
-                print("  ", v)
-        """
+            """for key, value in markets.items():
+                print(key, value)
+                for v in value:
+                    print("  ", v)
+            """
         return markets
