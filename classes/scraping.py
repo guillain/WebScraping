@@ -56,3 +56,14 @@ class Scraping:
         """
 
         return text
+
+    def display(self, reports):
+        for report in reports:
+            print('{} \t {} \t {} \t {} \t {} \t {}'.format(
+                report.timestamp.strftime("%Y-%m-%d %H:%M:%S"),
+                report.name,
+                report.symbol,
+                report.marketcap,
+                report.price,
+                report.volume
+            ))
