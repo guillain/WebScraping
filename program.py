@@ -6,6 +6,7 @@
 import sys
 import getopt
 import time
+import threading
 
 from classes.report import Report
 from classes.scraping import Scraping
@@ -13,7 +14,8 @@ from classes.plot import Plot
 
 # Constantes definition
 default = {
-    "loop_timer": 5, # (s)
+    "loop_timer_display": 5,  # (s)
+    "loop_timer_collector": 0,  # (s)
     "row_limit": 10,
     "report_dir": "reports",
     "plot_bool": True,
@@ -23,9 +25,11 @@ default = {
     "collect_url": "https://coinmarketcap.com/fr/all/views/all/"
 }
 
+
 class App:
     def __init__(self, default, argv):
-        self.loop_timer = default.get("loop_timer")
+        self.loop_timer_display = default.get("loop_timer_display")
+        self.loop_timer_collector = default.get("loop_timer_collector")
         self.row_limit = default.get("row_limit")
 
         self.report = Report(default)
@@ -37,7 +41,7 @@ class App:
     def init_params(self, argv):
         try:
             opts, args = getopt.getopt(argv, "hf::t:l:o:d:PF",
-                                       ["help", "noplot", "nofile", "timer=", "file=", "dir=", "limit=","order="])
+                                       ["help", "noplot", "nofile", "timer=", "file=", "dir=", "limit=", "order="])
             for opt, arg in opts:
                 if opt in ("-d", "--help"):
                     self.help()
@@ -73,21 +77,51 @@ class App:
               '-h // --help '
               )
 
-# Start Main program
-def main(argv):
-    app = App(default, argv)
+def collector(app):
     try:
-        while True:
-            app.time_done = time.time() + app.loop_timer
-            reports = app.scraping.get_reports(app.scraping.get_html(), app.row_limit)
-            app.report.display(reports)
-            app.report.save(app.report.file, reports)
-            app.plot.display_file(app.report.file, reports)
-            while time.time() < app.time_done:
+            #while True:
+            time_done = time.time() + app.loop_timer_collector
+
+            app.reports = app.scraping.get_reports(app.scraping.get_html(), app.row_limit)
+            app.scraping.display(app.reports)
+            app.report.save(app.report.file, app.reports)
+
+            while time.time() < time_done:
                 print(time.strftime("%Y-%m-%d %H:%M:%S"))
                 time.sleep(1)
     except KeyboardInterrupt:
         print('Manual break by user')
 
+def display(app):
+    try:
+            #while True:
+            time_done = time.time() + app.loop_timer_display
+
+            app.markets = app.report.data_mapping(app.markets, app.reports)
+            #app.report.display(app.markets)
+            app.plot.display_file(app.report.file, app.reports)
+
+            while time.time() < time_done:
+                print(time.strftime("%Y-%m-%d %H:%M:%S"))
+                time.sleep(1)
+    except KeyboardInterrupt:
+        print('Manual break by user')
+
+def main(argv):
+    app = App(default, argv)
+    app.markets = {}
+    try:
+        while True:
+            collector(app)
+            display(app)
+            """
+            t_collector = threading.Thread(name='collector', target=collector, args=app)
+            t_collector.start()
+            t_display = threading.Thread(name='display', target=display, args=app)
+            t_display.start()
+            """
+    except KeyboardInterrupt:
+        print('Manual break by user')
+
 if __name__ == '__main__':
-   main(sys.argv[1:])
+    main(sys.argv[1:])
