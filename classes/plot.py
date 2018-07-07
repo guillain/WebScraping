@@ -29,11 +29,11 @@ class Plot:
 
     def display_file(self, file, reports):
         for index, report in enumerate(reports):
-            timestamp, name, marketcap, price, volume = \
-                np.loadtxt('{}/{}{}'.format(self.report_dir, report.name, file),
+            timestamp, name, symbol, marketcap, price, volume = \
+                np.loadtxt('{}/{}{}'.format(self.report_dir, report.get('name'), file),
                            dtype={
-                               'names': ('timestamp', 'name', 'marketcap', 'price','volume'),
-                               'formats': ('S26', 'S32', 'S32', 'f4', 'f4')
+                               'names': ('timestamp', 'name', 'symbol', 'marketcap', 'price','volume'),
+                               'formats': ('S26', 'S32', 'S32', 'S32', 'f4', 'f4')
                            },
                            delimiter=',',
                            unpack=True,
@@ -42,10 +42,32 @@ class Plot:
             dates_list = [datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f') for ts in timestamp]
 
             self.plt.subplot(211)
-            self.plt.plot(dates_list, price, label=report.name)
+            self.plt.plot(dates_list, price, label = report.get('name'))
 
             self.plt.subplot(212)
-            self.plt.plot(dates_list, volume, label=report.name)
+            self.plt.plot(dates_list, volume, label = report.get('name'))
+
+        self.plt.draw_all()
+        self.plt.pause(.001)
+
+    def graph(self, markets):
+        for market in markets:
+            price = []
+            volume = []
+            for line in market:
+                price.append(line[3])
+            print("market", market)
+            print("markets[market]", markets[market])
+            prices = [price for price in markets[market][3]]
+            print(prices)
+            volumes = [volume for volume in market.get('volume')]
+            dates = [datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f') for ts in market.get('timestamp')]
+
+            self.plt.subplot(211)
+            self.plt.plot(dates, prices, label = market.get('name'))
+
+            self.plt.subplot(212)
+            self.plt.plot(dates, volumes, label = market.get('name'))
 
         self.plt.draw_all()
         self.plt.pause(.001)
