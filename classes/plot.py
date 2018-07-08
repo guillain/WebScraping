@@ -29,7 +29,7 @@ class Plot:
 
     def display_file(self, file, reports):
         for index, report in enumerate(reports):
-            timestamp, name, symbol, marketcap, price, volume = \
+            timestamp, names, symbols, marketcaps, prices, volumes = \
                 np.loadtxt('{}/{}{}'.format(self.report_dir, report.get('name'), file),
                            dtype={
                                'names': ('timestamp', 'name', 'symbol', 'marketcap', 'price','volume'),
@@ -39,35 +39,41 @@ class Plot:
                            unpack=True,
                            skiprows=1
                 )
-            dates_list = [datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f') for ts in timestamp]
+
+            #dates = [datetime.strptime(ts, '%Y-%m-%d %H:%M:%S') for ts in timestamp]
+            dates = []
+            for ts in timestamp:
+                try:
+                    dates.append(datetime.strptime(ts, '%Y-%m-%d %H:%M:%S'))
+                except:
+                    dates.append(datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f'))
 
             self.plt.subplot(211)
-            self.plt.plot(dates_list, price, label = report.get('name'))
+            self.plt.plot(timestamp, prices, label = report.get('name'))
 
             self.plt.subplot(212)
-            self.plt.plot(dates_list, volume, label = report.get('name'))
+            self.plt.plot(timestamp, volumes, label = report.get('name'))
 
         self.plt.draw_all()
         self.plt.pause(.001)
 
     def graph(self, markets):
         for market in markets:
-            price = []
-            volume = []
-            for line in market:
-                price.append(line[3])
             print("market", market)
             print("markets[market]", markets[market])
-            prices = [price for price in markets[market][3]]
-            print(prices)
-            volumes = [volume for volume in market.get('volume')]
-            dates = [datetime.strptime(ts, '%Y-%m-%d %H:%M:%S.%f') for ts in market.get('timestamp')]
+            dates = []
+            prices = []
+            volumes = []
+            for line in markets[market]:
+                dates.append(line.get("timestamp"))
+                prices.append(line.get("price"))
+                volumes.append(line.get("volume"))
 
             self.plt.subplot(211)
-            self.plt.plot(dates, prices, label = market.get('name'))
+            self.plt.plot(dates, prices, label = market)
 
             self.plt.subplot(212)
-            self.plt.plot(dates, volumes, label = market.get('name'))
+            self.plt.plot(dates, volumes, label = market)
 
         self.plt.draw_all()
         self.plt.pause(.001)

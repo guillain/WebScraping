@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 from os import listdir, path
 from os.path import isfile, join
 
@@ -26,10 +27,10 @@ class Report:
             name = file.split(self.file)[0]
             data[name] = []
 
-            print("report.load", name, filename)
+            print("report.get", name, filename)
 
             with open(filename, 'rb') as csvfile:
-                reader = csv.reader(csvfile, delimiter=',')
+                reader = csv.DictReader(csvfile, delimiter=',')
                 for line in reader:
                     data[name].append(line)
         return data

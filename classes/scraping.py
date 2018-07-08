@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+import time
 import bs4
 import requests
 
@@ -14,7 +14,7 @@ class Scraping:
 
     def get(self, html, limit):
         g_data = []
-        timestamp = datetime.now()
+        timestamp = time.gmtime()
         soup = bs4.BeautifulSoup(html, 'html.parser')
         table = soup.find(id='currencies-all')
         table_body = table.find('tbody')
@@ -23,7 +23,7 @@ class Scraping:
 
         for row in rows:
             data = {}
-            data["timestamp"] = timestamp
+            data["timestamp"] = time.strftime('%Y-%m-%d %H:%M:%S', timestamp)
             data["name"] = self.cleanup_text(row.find(class_='currency-name').get_text())
             data["symbol"] = self.cleanup_text(row.find(class_='currency-symbol').get_text())
             data["marketcap"] = self.cleanup_text(row.find(class_='market-cap').get_text())
