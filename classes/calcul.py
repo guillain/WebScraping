@@ -5,9 +5,20 @@ class Calcul:
         self.data = {}
 
     def display(self):
-        #print("calcul.display", self.data)
-        for calc in self.data:
-            print("calcul.display", calc, self.data[calc])
+        for data in self.data:
+            print("calcul.display", data, self.data[data])
+
+    def alert(self):
+        for data in self.data:
+            res = ''
+            var_prices, var_volumes = self.data[data]
+            if var_prices > 0:
+                res += "- Prices alert: {} ".format(var_prices)
+            if var_volumes > 0:
+                res += "- Volumes alert: {} ".format(var_volumes)
+            if res not in '':
+                print("calcul.alert", data, res)
+        print()
 
     def calc(self, data):
         for calc in data:
