@@ -10,15 +10,15 @@ from classes.app import App
 # Constantes definition
 default = {
     "debug": False,
-    "row_limit": 10,
+    "row_limit": 15,
     "loop_timer_display": 5,  # (s)
     "loop_timer_collector": 0,  # (s)
-    "print_scraping": False,
     "print_report": False,
+    "print_scraping": False,
     "print_market": False,
     "print_plot": False,
     "print_calcul": True,
-    "print_file": True,
+    "print_file": False,
     "report_dir": "reports",
     "file": "-timeserial_report.csv",
     "collect_name": "coinmarketcap",

@@ -30,7 +30,14 @@ class Report:
             with open(filename, 'rt') as csvfile:
                 reader = csv.DictReader(csvfile, delimiter=',')
                 for line in reader:
-                    data[name].append(line)
+                    line_data = {}
+                    line_data['timestamp'] = line.get("timestamp")
+                    line_data['name'] = line.get("name")
+                    line_data['symbol'] = line.get("symbol")
+                    line_data['marketcap'] = line.get("marketcap")
+                    line_data['price'] = float(line.get("price"))
+                    line_data['volume'] = float(line.get("volume"))
+                    data[name].append(line_data)
         return data
 
     def save_header(self, filename):

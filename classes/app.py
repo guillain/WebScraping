@@ -26,13 +26,13 @@ class App:
         self.scraping = Scraping(default)
         self.market = Market(default)
         self.calcul = Calcul(default)
+
         if self.default.get('print_plot'): self.plot = Plot(default)
 
     def init(self, argv):
         if self.default.get('debug'): print("app.init")
 
         self.init_params(argv)
-
         self.market.data = self.report.get()
 
     def init_params(self, argv):
@@ -83,10 +83,12 @@ class App:
             # while True:
             app.time_done_collector = time.time() + app.loop_timer_collector
 
-            app.scraping.data = app.scraping.get(app.scraping.get_html(), app.row_limit)
-            app.market.data_mapping(app.scraping.data)
-            app.report.calcul(app.market.data)
-            app.report.save(app.scraping.data)
+            scraping_data = app.scraping.get(app.scraping.get_html(), app.row_limit)
+            app.report.save(scraping_data)
+
+            market_data = app.market.data_mapping(scraping_data)
+            max_data = app.calcul.calc(market_data)
+
 
             self.timer(app.time_done_collector)
         except KeyboardInterrupt:
@@ -110,5 +112,5 @@ class App:
 
     def timer(self, time_done):
         while time.time() < time_done:
-            print(time.strftime("%Y-%m-%d %H:%M:%S"))
+            #print(time.strftime("%Y-%m-%d %H:%M:%S"))
             time.sleep(1)
