@@ -9,7 +9,7 @@ from classes.app import App
 
 # Constantes definition
 default = {
-    "debug": False,
+    "debug": True,
     "row_limit": 15,
     "loop_timer_display": 5,  # (s)
     "loop_timer_collector": 0,  # (s)
@@ -31,14 +31,15 @@ def main(argv):
     app.init(argv)
 
     try:
-        while True:
-            app.collector(app)
-            app.display(app)
+        #while True:
+            #app.collector()
+            #app.display()
 
-            #t_collector = threading.Thread(name='ap.collector', target=collector, args=app)
-            #t_collector.start()
-            #t_display = threading.Thread(name='app.display', target=display, args=app)
-            #t_display.start()
+        t_collector = threading.Thread(name='app.collector', target=app.collector)
+        t_collector.start()
+
+        t_display = threading.Thread(name='app.display', target=app.display)
+        t_display.start()
 
     except KeyboardInterrupt:
         print('Manual break by user')

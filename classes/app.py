@@ -100,40 +100,40 @@ class App:
               '-O / -- / load old the files info'
               )
 
-    def collector(self, app):
+    def collector(self):
         try:
-            # while True:
-            app.time_done_collector = time.time() + app.loop_timer_collector
+            while True:
+                self.time_done_collector = time.time() + self.loop_timer_collector
 
-            scraping_data = app.scraping.get(app.scraping.get_html(), app.row_limit)
-            app.report.save(scraping_data)
+                scraping_data = self.scraping.get(self.scraping.get_html(), self.row_limit)
+                self.report.save(scraping_data)
 
-            market_data = app.market.data_mapping(scraping_data)
-            max_data = app.calcul.calc(market_data)
+                market_data = self.market.data_mapping(scraping_data)
+                max_data = self.calcul.calc(market_data)
 
 
-            self.timer(app.time_done_collector)
+                self.timer(self.time_done_collector)
         except KeyboardInterrupt:
             print('Manual break by user')
 
-    def display(self, app):
+    def display(self):
         try:
-            # while True:
-            app.time_done_display = time.time() + app.loop_timer_display
+            while True:
+                self.time_done_display = time.time() + self.loop_timer_display
 
-            app.calcul.alert()
-            if app.default.get('print_scraping'): app.scraping.display()
-            if app.default.get('print_report'): app.report.display()
-            if app.default.get('print_market'): app.market.display()
-            if app.default.get('print_calcul'): app.calcul.display()
-            if app.default.get('print_plot'): app.plot.graph(app.market.data)
-            # if app.default.get('print_plot'): app.plot.display_file(app.report.file, app.scraping.data)
+                self.calcul.alert()
+                if self.default.get('print_scraping'): self.scraping.display()
+                if self.default.get('print_report'): self.report.display()
+                if self.default.get('print_market'): self.market.display()
+                if self.default.get('print_calcul'): self.calcul.display()
+                if self.default.get('print_plot'): self.plot.graph(self.market.data)
+                # if self.default.get('print_plot'): self.plot.display_file(self.report.file, self.scraping.data)
 
-            self.timer(app.time_done_display)
+                self.timer(self.time_done_display)
         except KeyboardInterrupt:
-            print('Manual break by user')
+            print('Manually stopped')
 
     def timer(self, time_done):
         while time.time() < time_done:
-            #print(time.strftime("%Y-%m-%d %H:%M:%S"))
+            if self.default.get('debug'): print(time.strftime("%Y-%m-%d %H:%M:%S"))
             time.sleep(1)
