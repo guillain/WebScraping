@@ -17,7 +17,7 @@ default = {
     "print_scraping": False,
     "print_market": False,
     "print_plot": False,
-    "print_calcul": True,
+    "print_calcul": False,
     "print_file": False,
     "report_dir": "reports",
     "file": "-timeserial_report.csv",

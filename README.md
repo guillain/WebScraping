@@ -1,14 +1,17 @@
 # WebScraping
-Provide an example on the 'how to' scrap a web site... to generate your own reports.
-Default output are:
+Provide an example on the 'how to' scrap a web site... to generate your own reports and alerts.
+Default configuration is for:
+* alerting
+* files record
+Output options are:
 * CSV files:
   * one file by name
   * one global file
-* Graph updated
-  * Price
-  * Volume
-  
-Up to you to adapt to your need ;-)
+* Graph with realtime refresh on:
+  * Prices
+  * Volumes
+
+Up to you to adapt to your need and fork it ;-)
 
 ## Fast track
 ```
@@ -36,13 +39,21 @@ Short and with the default parameters
 `python program.py`
 
 ## Parameters
-* -t / --timer: loop frequency, default 5s
-* -l / --limit: number of row collected, default 10
-* -o / --order: to order the values
-* -D / --dir: output directory for the CSV files
-* -s / --sfile : output file for the timeserial record
-* -r / --rfile : output file for the realtime record
-* -p / --plot : to deactivate the graph generation
+* -h // --help 
+*       --debug 
+* -d / --dir= <output dir> / define the output folder
+* -f / --file= <filename> / define the files suffix
+* -t / --timer= <loop timer> / define the collector loop timer
+* -l / --limit= <row limit> / define the limit to use during the market collection
+* -n / --collect_name= <name> / define the name for this collection
+* -u / --collect_url= <url to collect> / define the url to reach to collect the info
+* -R / -- / display the report info
+* -S / -- / display the scraping info
+* -M / -- / display the market info
+* -P / -- / enable the graph creation and update
+* -C / -- / display the calcu info
+* -F / -- / display the file info
+* -O / -- / load old the files info
 
 Using the indexes for the parameters
 

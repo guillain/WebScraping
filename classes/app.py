@@ -39,29 +39,42 @@ class App:
 
     def init_params(self, argv):
         if self.default.get('debug'): print("app.init_params")
-
         try:
-            opts, args = getopt.getopt(argv, "hf::t:l:o:d:PF",
-                                       ["help", "noplot", "nofile", "timer=", "file=", "dir=", "limit=", "order="])
+            opts, args = getopt.getopt(argv, "hd:f:t:l:n:c:RSMPCFO",
+                                       ["help", "debug", "dir", "file=", "timer=", "limit=", "collect_name=", "collect_url="])
             for opt, arg in opts:
-                if opt in ("-d", "--help"):
+                if opt in ("-h", "--help"):
                     self.help()
                     sys.exit()
+                elif opt in ("--debug"):
+                    self.debug = True
                 elif opt in ("-d", "--dir"):
                     self.plot.report_dir = arg
                     self.report.report_dir = arg
                 elif opt in ("-f", "--file"):
                     self.report.realtime_file = arg
                 elif opt in ("-t", "--timer"):
-                    self.loop_timer = int(arg)
+                    self.loop_timer_collector = int(arg)
                 elif opt in ("-l", "--limit"):
                     self.row_limit = int(arg)
-                elif opt in ("-o", "--order"):
-                    self.plot.row_order = int(arg)
-                elif opt in ("-P", "--noplot"):
-                    self.plot.print_plot = False
-                elif opt in ("-F", "--nofile"):
-                    self.report.print_file = False
+                elif opt in ("-n", "--collect_name"):
+                    self.collect_name = int(arg)
+                elif opt in ("-c", "--collect_url"):
+                    self.plot.collect_url = int(arg)
+                elif opt in ("-R"):
+                    self.report.print_report = True
+                elif opt in ("-S"):
+                    self.report.print_scraping = True
+                elif opt in ("-M"):
+                    self.report.print_market = True
+                elif opt in ("-P"):
+                    self.report.print_plot = True
+                elif opt in ("-C"):
+                    self.report.print_calcul = True
+                elif opt in ("-F"):
+                    self.report.print_file = True
+                elif opt in ("-O"):
+                    self.report.old_file = True
         except getopt.GetoptError:
             self.help()
             sys.exit(2)
@@ -70,14 +83,21 @@ class App:
         if self.default.get('debug'): print("app.help")
 
         print('program.py '
-              '-t / --timer= <loop timer> '
-              '-l / --limit= <row limit> '
-              '-o / --order= <order> '
-              '-f / --file= <filename> '
-              '-d / --dir= <output dir> '
-              '-P / --noplot '
-              '-F / --nofile '
               '-h // --help '
+              '      --debug '
+              '-d / --dir= <output dir> / define the output folder'
+              '-f / --file= <filename> / define the files suffix'
+              '-t / --timer= <loop timer> / define the collector loop timer'
+              '-l / --limit= <row limit> / define the limit to use during the market collection'
+              '-n / --collect_name= <name> / define the name for this collection'
+              '-u / --collect_url= <url to collect> / define the url to reach to collect the info'
+              '-R / -- / display the report info'
+              '-S / -- / display the scraping info'
+              '-M / -- / display the market info'
+              '-P / -- / enable the graph creation and update'
+              '-C / -- / display the calcu info'
+              '-F / -- / display the file info'
+              '-O / -- / load old the files info'
               )
 
     def collector(self, app):
@@ -101,6 +121,7 @@ class App:
             # while True:
             app.time_done_display = time.time() + app.loop_timer_display
 
+            app.calcul.alert()
             if app.default.get('print_scraping'): app.scraping.display()
             if app.default.get('print_report'): app.report.display()
             if app.default.get('print_market'): app.market.display()
