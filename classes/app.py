@@ -11,6 +11,7 @@ from classes.report import Report
 from classes.scraping import Scraping
 from classes.plot import Plot
 from classes.market import Market
+from classes.calcul import Calcul
 
 class App:
     def __init__(self, default):
@@ -23,8 +24,9 @@ class App:
 
         self.report = Report(default)
         self.scraping = Scraping(default)
-        self.plot = Plot(default)
         self.market = Market(default)
+        self.calcul = Calcul(default)
+        if self.default.get('print_plot'): self.plot = Plot(default)
 
     def init(self, argv):
         if self.default.get('debug'): print("app.init")
@@ -55,9 +57,9 @@ class App:
                 elif opt in ("-o", "--order"):
                     self.plot.row_order = int(arg)
                 elif opt in ("-P", "--noplot"):
-                    self.plot.plot_bool = False
+                    self.plot.print_plot = False
                 elif opt in ("-F", "--nofile"):
-                    self.report.file_bool = False
+                    self.report.print_file = False
         except getopt.GetoptError:
             self.help()
             sys.exit(2)
@@ -83,6 +85,7 @@ class App:
 
             app.scraping.data = app.scraping.get(app.scraping.get_html(), app.row_limit)
             app.market.data_mapping(app.scraping.data)
+            app.report.calcul(app.market.data)
             app.report.save(app.scraping.data)
 
             self.timer(app.time_done_collector)
@@ -96,10 +99,10 @@ class App:
 
             if app.default.get('print_scraping'): app.scraping.display()
             if app.default.get('print_report'): app.report.display()
-            if app.default.get('print_market'):  app.market.display()
-
-            #app.plot.display_file(app.report.file, app.scraping.data)
-            app.plot.graph(app.market.data)
+            if app.default.get('print_market'): app.market.display()
+            if app.default.get('print_calcul'): app.calcul.display()
+            if app.default.get('print_plot'): app.plot.graph(app.market.data)
+            # if app.default.get('print_plot'): app.plot.display_file(app.report.file, app.scraping.data)
 
             self.timer(app.time_done_display)
         except KeyboardInterrupt:

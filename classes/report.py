@@ -6,11 +6,11 @@ class Report:
     def __init__(self, default):
         self.report_dir = default.get("report_dir")
         self.file = default.get("file")
-        self.file_bool = default.get("file_bool")
+        self.print_file = default.get("print_file")
         self.data = {}
 
     def check_exec(self):
-        if self.file_bool in ('True', True):
+        if self.print_file in ('True', True):
             return True
         return False
 
