@@ -71,10 +71,8 @@ Provide a file with all collected data
 
 ## Python version
 Validated on the following Python versions:
-* Python 2.7
-
-Issued
-* Python 3.6: on datetime
+* Python 2.7.13
+* Python 3.6.5
 
 ## Windows users
 1/ From Windows Explorer

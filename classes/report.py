@@ -1,5 +1,4 @@
 import csv
-from datetime import datetime
 from os import listdir, path
 from os.path import isfile, join
 
@@ -28,8 +27,7 @@ class Report:
             data[name] = []
 
             print("report.get", name, filename)
-
-            with open(filename, 'rb') as csvfile:
+            with open(filename, 'rt') as csvfile:
                 reader = csv.DictReader(csvfile, delimiter=',')
                 for line in reader:
                     data[name].append(line)
