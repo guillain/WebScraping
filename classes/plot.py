@@ -5,7 +5,7 @@ import numpy as np
 class Plot:
     def __init__(self, default):
         self.report_dir = default.get("report_dir")
-        self.plot_bool = default.get("plot_bool")
+        self.print_plot = default.get("print_plot")
         self.figure = plt.figure()
 
         plt.ion()
@@ -59,8 +59,7 @@ class Plot:
 
     def graph(self, markets):
         for market in markets:
-            print("market", market)
-            print("markets[market]", markets[market])
+            print("market", market, "markets[market]", markets[market])
             dates = []
             prices = []
             volumes = []
