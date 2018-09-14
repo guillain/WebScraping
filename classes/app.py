@@ -33,7 +33,9 @@ class App:
         if self.default.get('debug'): print("app.init")
 
         self.init_params(argv)
-        self.market.data = self.report.get()
+
+        if self.default.get('load_file'):
+            self.market.data = self.report.get()
 
     def init_params(self, argv):
         if self.default.get('debug'): print("app.init_params")

@@ -21,6 +21,7 @@ default = {
     "print_file": False,
     "report_dir": "reports",
     "file": "-timeserial_report.csv",
+    "load_file": False,
     "collect_name": "coinmarketcap",
     "collect_url": "https://coinmarketcap.com/fr/all/views/all/"
 }
