@@ -10,6 +10,10 @@ Output options are:
 * Graph with realtime refresh on:
   * Prices
   * Volumes
+  
+  for:
+  * alerts
+  * reports
 
 Up to you to adapt to your need and fork it ;-)
 
@@ -31,12 +35,20 @@ Move in the folder
 `cd WebScraping`
 
 Install requirements
+
 `pip install -r requirements.txt`
+
+## Configure
+Edit the [config.ini](config.ini) file to set your permanent parameters.
+This include also parameters not available by the CLI like the thresholds for the alert:
+* alert_price_threshold
+* alert_volume_threshold
+
 
 ## Execution
 Short and with the default parameters
 
-`python program.py`
+`python program.py -DA`
 
 ## Parameters: 
 [classes/standard.py](classes/standard.py)
@@ -72,7 +84,7 @@ The generates files are stored by default in:
 
 `./reports` 
 
-### Timeserial
+### Time serial
 Provide a file this increase with each collect
 
 `./reports/{market}_timeserial_report.csv`
