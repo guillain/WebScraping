@@ -47,13 +47,15 @@ Short and with the default parameters
 * -l / --limit= <row limit> / define the limit to use during the market collection
 * -n / --collect_name= <name> / define the name for this collection
 * -u / --collect_url= <url to collect> / define the url to reach to collect the info
+* -A / -- / display the alert
 * -R / -- / display the report info
-* -S / -- / display the scraping info
+* -G / -- / display the scraping info
 * -M / -- / display the market info
-* -P / -- / enable the graph creation and update
-* -C / -- / display the calcu info
+* -P / -- / enable and display the graph creation and update
+* -C / -- / display the calcul info
 * -F / -- / display the file info
-* -O / -- / load old the files info
+* -S / -- / save the scraping output in file'
+* -O / -- / CSV files loader
 
 Using the indexes for the parameters
 

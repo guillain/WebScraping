@@ -3,31 +3,24 @@ from os import listdir, path
 from os.path import isfile, join
 
 class Report:
-    def __init__(self, default):
-        self.report_dir = default.get("report_dir")
-        self.file = default.get("file")
-        self.print_file = default.get("print_file")
-        self.data = {}
+    def __init__(self, conf):
+        self.conf = conf
+        self.debug("report", "__init__")
 
-    def check_exec(self):
-        if self.print_file in ('True', True):
-            return True
-        return False
+        self.data = {}
+        self.files = {}
 
     def display(self):
+        self.debug("report", "display")
         for report in self.data:
             print("report.display",report)
 
     def get(self):
-        onlyfiles = [f for f in listdir(self.report_dir) if isfile(join(self.report_dir, f))]
-        data = {}
-        for file in onlyfiles:
-            filename = '{}/{}'.format(self.report_dir, file)
-            name = file.split(self.file)[0]
-            data[name] = []
-
-            print("report.get", name, filename)
-            with open(filename, 'rt') as csvfile:
+        self.debug("report", "get")
+        file_list = self.get_file_list()
+        for name in file_list:
+            self.data[name] = []
+            with open(file_list[name][0], 'rt') as csvfile:
                 reader = csv.DictReader(csvfile, delimiter=',')
                 for line in reader:
                     line_data = {}
@@ -37,11 +30,30 @@ class Report:
                     line_data['marketcap'] = line.get("marketcap")
                     line_data['price'] = float(line.get("price"))
                     line_data['volume'] = float(line.get("volume"))
-                    data[name].append(line_data)
-        return data
+                    self.data[name].append(line_data)
+        return self.data
+
+    def display_file_list(self):
+        self.debug("report", "display_file_list")
+        files = self.get_file_list()
+        for file in files:
+            print("report.display_file_list",file, files[file][0])
+
+    def get_file_list(self):
+        self.debug("report", "get_file_list")
+        onlyfiles = [f for f in listdir(self.conf['report_dir']) if isfile(join(self.conf['report_dir'], f))]
+        self.files = {}
+        for file in onlyfiles:
+            filename = '{}/{}'.format(self.conf['report_dir'], file)
+            name = file.split(self.conf['file'])[0]
+            if name  not in self.files:
+                self.files[name] = []
+            self.files[name].append(filename)
+        return self.files
 
     def save_header(self, filename):
-        if self.check_exec:
+        self.debug("report", "save_header")
+        if self.conf['save_file']:
             with open(filename, 'w') as f:
                 f.write('{},{},{},{},{},{}\n'.format(
                     "timestamp",
@@ -53,7 +65,8 @@ class Report:
                 ))
 
     def save_content(self, filename, report):
-        if self.check_exec:
+        self.debug("report", "save_content")
+        if self.conf['save_file']:
             with open(filename, 'a') as f:
                 f.write('{},{},{},{},{},{}\n'.format(
                     report.get("timestamp"),
@@ -65,11 +78,17 @@ class Report:
                 ))
 
     def save(self, reports):
+        self.debug("report", "save")
+
         self.data = reports
 
-        if self.check_exec:
+        if self.conf['save_file']:
             for report in self.data:
-                filename = '{}/{}{}'.format(self.report_dir, report.get("name"), self.file)
+                filename = '{}/{}{}'.format(self.conf['report_dir'], report.get("name"), self.conf['file'])
                 if not path.isfile(filename):
                     self.save_header(filename)
                 self.save_content(filename, report)
+
+    def debug(self, clas, fct, data = None):
+        if self.conf['debug']:
+            print(">>>>>", clas, " - ", fct, " - ", data)

@@ -3,9 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class Plot:
-    def __init__(self, default):
-        self.report_dir = default.get("report_dir")
-        self.print_plot = default.get("print_plot")
+    def __init__(self, conf):
+        self.conf = conf
+        self.debug("plot", "__init__")
+
         self.figure = plt.figure()
 
         plt.ion()
@@ -28,9 +29,10 @@ class Plot:
         self.plt = plt
 
     def display_file(self, file, reports):
+        self.debug("plot", "display")
         for index, report in enumerate(reports):
             timestamp, names, symbols, marketcaps, prices, volumes = \
-                np.loadtxt('{}/{}{}'.format(self.report_dir, report.get('name'), file),
+                np.loadtxt('{}/{}{}'.format(self.conf['report_dir'], report.get('name'), file),
                            dtype={
                                'names': ('timestamp', 'name', 'symbol', 'marketcap', 'price','volume'),
                                'formats': ('S26', 'S32', 'S32', 'S32', 'f4', 'f4')
@@ -58,6 +60,7 @@ class Plot:
         self.plt.pause(.001)
 
     def graph(self, markets):
+        self.debug("plot", "graph")
         for market in markets:
             print("market", market, "markets[market]", markets[market])
             dates = []
@@ -76,3 +79,7 @@ class Plot:
 
         self.plt.draw_all()
         self.plt.pause(.001)
+
+    def debug(self, clas, fct, data=None):
+        if self.conf['debug']:
+            print(">>>>>", clas, " - ", fct, " - ", data)

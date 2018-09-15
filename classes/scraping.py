@@ -4,16 +4,19 @@ import bs4
 import requests
 
 class Scraping:
-    def __init__(self, default):
-        self.collect_name = default.get("collect_name")
-        self.collect_url = default.get("collect_url")
+    def __init__(self, conf):
+        self.conf = conf
+        self.debug("scraping", "__init__")
+        self.data = []
 
     def get_html(self):
-        response = requests.get(self.collect_url)
+        self.debug("scraping", "get_html")
+        response = requests.get(self.conf['collect_url'])
         return response.text
 
     def get(self, html, limit):
-        g_data = []
+        self.debug("scraping", "get")
+
         timestamp = time.gmtime()
         soup = bs4.BeautifulSoup(html, 'html.parser')
         table = soup.find(id='currencies-all')
@@ -30,16 +33,14 @@ class Scraping:
             data["price"] = self.cleanup_text(row.find(class_='price').get_text())
             data["volume"] = self.cleanup_text(row.find(class_='volume').get_text())
 
-            g_data.append(data)
+            self.data.append(data)
 
             index = index + 1
             if index > limit:
-                return g_data
-        return g_data
+                return self.data
+        return self.data
 
     def cleanup_text(self, text):
-        #print("scraping.cleanup_text", text)
-
         if not text:
             return text
 
@@ -48,5 +49,10 @@ class Scraping:
         return text
 
     def display(self):
+        self.debug("scraping", "display")
         for line in self.data:
             print("scraping.display", line)
+
+    def debug(self, clas, fct, data = None):
+        if self.conf['debug']:
+            print(">>>>>", clas, " - ", fct, " - ", data)
