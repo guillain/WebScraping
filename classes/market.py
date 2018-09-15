@@ -1,5 +1,6 @@
 from classes.standard import Standard
 
+
 class Market(Standard):
     def __init__(self, default, argv):
         Standard.__init__(self, default, argv)

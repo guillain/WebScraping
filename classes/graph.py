@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from classes.standard import Standard
 
+
 class Graph(Standard):
     def __init__(self, default, argv):
         Standard.__init__(self, default, argv)
+
         self.debug("graph", "__init__")
 
     def init(self):
@@ -31,7 +33,7 @@ class Graph(Standard):
         self.plt = plt
 
     def display_file(self, file, reports):
-        self.debug("graph", "display")
+        self.debug("graph", "display_file")
         for index, report in enumerate(reports):
             timestamp, names, symbols, marketcaps, prices, volumes = \
                 np.loadtxt('{}/{}{}'.format(self.conf['report_dir'], report.get('name'), file),

@@ -38,7 +38,9 @@ Short and with the default parameters
 
 `python program.py`
 
-## Parameters
+## Parameters: 
+[classes/standard.py](classes/standard.py)
+
 * -h // --help 
 *       --debug 
 * -d / --dir= <output dir> / define the output folder
@@ -47,16 +49,16 @@ Short and with the default parameters
 * -l / --limit= <row limit> / define the limit to use during the market collection
 * -n / --collect_name= <name> / define the name for this collection
 * -u / --collect_url= <url to collect> / define the url to reach to collect the info
-* -A / -- / display the alert
+* -G / -- / graph the collection
+* -A / -- / display the alert (values of variation)
+* -D / -- / graph the alert
 * -R / -- / display the report info
-* -G / -- / display the scraping info
+* -P / -- / display the scraping info
 * -M / -- / display the market info
-* -P / -- / enable and display the graph creation and update
-* -C / -- / display the calcul info
 * -F / -- / display the file info
-* -S / -- / save the scraping output in file'
-* -O / -- / CSV files loader
-
+* -S / -- / save the scraping output in file  (compilation, one CSV file by collected entry)
+* -O / -- / CSV files loader (history)
+              
 Using the indexes for the parameters
 
 `python program.py -t 60 -l 10 -s timeserial_file.csv -r realtime_file.csv`

@@ -3,6 +3,7 @@ from os import listdir, path
 from os.path import isfile, join
 from classes.standard import Standard
 
+
 class Report(Standard):
     def __init__(self, default, argv):
         Standard.__init__(self, default, argv)

@@ -4,6 +4,7 @@ import bs4
 import requests
 from classes.standard import Standard
 
+
 class Scraping(Standard):
     def __init__(self, default, argv):
         Standard.__init__(self, default, argv)

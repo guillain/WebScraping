@@ -12,7 +12,8 @@ from classes.report import Report
 from classes.scraping import Scraping
 from classes.graph import Graph
 from classes.market import Market
-from classes.calcul import Calcul
+from classes.alert import Alert
+
 
 class App(Standard):
     def __init__(self, default, argv):
@@ -20,8 +21,8 @@ class App(Standard):
         self.report = Report(default, argv)
         self.scraping = Scraping(default, argv)
         self.market = Market(default, argv)
-        self.calcul = Calcul(default, argv)
         self.graph = Graph(default, argv)
+        self.alert = Alert(default, argv)
         if self.conf['load_file']: self.market.data = self.report.get()
         if self.conf['print_file']: self.report.display_file_list()
 
@@ -33,10 +34,8 @@ class App(Standard):
                 self.conf['time_done_collector'] = time.time() + self.conf['loop_timer_collector']
 
                 scraping_data = self.scraping.get(self.scraping.get_html(), self.conf['row_limit'])
-                self.report.save(scraping_data)
-
                 market_data = self.market.data_mapping(scraping_data)
-                calc_data = self.calcul.calc(market_data)
+                self.report.save(scraping_data)
 
                 self.timer(self.conf['time_done_collector'])
         except KeyboardInterrupt:
@@ -44,20 +43,37 @@ class App(Standard):
 
     def display(self):
         self.debug("app","display")
+
         if self.conf['print_graph']: self.graph.init()
 
         try:
             while True:
                 self.conf['time_done_display'] = time.time() + self.conf['loop_timer_display']
 
-                if self.conf['print_alert']: self.calcul.alert()
                 if self.conf['print_scraping']: self.scraping.display()
                 if self.conf['print_report']: self.report.display()
                 if self.conf['print_market']: self.market.display()
-                if self.conf['print_calcul']: self.calcul.display()
                 if self.conf['print_graph']: self.graph.trace(self.market.data)
                 # if self.conf.get('print_graph'): self.graph.display_file(self.report.file, self.scraping.data)
 
                 self.timer(self.conf['time_done_display'])
+        except KeyboardInterrupt:
+            print('Manually stopped')
+
+    def alerting(self):
+        self.debug("app","alerting")
+
+        if self.conf['print_alert_graph']: self.alert.init()
+
+        try:
+            while True:
+                self.conf['time_done_alert'] = time.time() + self.conf['loop_timer_alert']
+
+                self.alert.calc(self.market.data)
+                if self.conf['print_alert']: self.alert.display_calc()
+                #self.alert.display(self.alert.market_data)
+                if self.conf['print_alert_graph']: self.alert.trace(self.alert.market_data)
+
+                self.timer(self.conf['time_done_alert'])
         except KeyboardInterrupt:
             print('Manually stopped')

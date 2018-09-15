@@ -3,20 +3,24 @@ import sys
 import time
 import getopt
 
+
 class Standard(object):
     def __init__(self, default, argv):
         self.data = {}
         self.conf = {}
         self.conf['debug'] = int(default["debug"])
         self.conf['row_limit'] = int(default["row_limit"])
-        self.conf['loop_timer_display'] = int(default["loop_timer_display"])
         self.conf['loop_timer_collector'] = int(default["loop_timer_collector"])
-        self.conf['print_alert'] = int(default["print_alert"])
+        self.conf['loop_timer_display'] = int(default["loop_timer_display"])
+        self.conf['loop_timer_alert'] = int(default["loop_timer_alert"])
         self.conf['print_report'] = int(default["print_report"])
         self.conf['print_scraping'] = int(default["print_scraping"])
         self.conf['print_market'] = int(default["print_market"])
         self.conf['print_graph'] = int(default["print_graph"])
-        self.conf['print_calcul'] = int(default["print_calcul"])
+        self.conf['print_alert'] = int(default["print_alert"])
+        self.conf['print_alert_graph'] = int(default["print_alert_graph"])
+        self.conf['alert_price_threshold'] = int(default["alert_price_threshold"])
+        self.conf['alert_volume_threshold'] = int(default["alert_volume_threshold"])
         self.conf['print_file'] = int(default["print_file"])
         self.conf['report_dir'] = default["report_dir"]
         self.conf['file'] = default["file"]
@@ -33,7 +37,7 @@ class Standard(object):
         self.debug("standard","init_params")
 
         try:
-            opts, args = getopt.getopt(argv, "hd:f:t:l:n:c:ARGMPCFSO",
+            opts, args = getopt.getopt(argv, "hd:f:t:l:n:c:RPMGADFSO",
                                        ["help", "debug", "dir", "file=", "timer=", "limit=", "collect_name=", "collect_url="])
             for opt, arg in opts:
                 if opt in ("-h", "--help"):
@@ -53,18 +57,18 @@ class Standard(object):
                     self.conf['collect_name'] = int(arg)
                 elif opt in ("-c", "--collect_url"):
                     self.conf['collect_url'] = int(arg)
-                elif opt in ("-A"):
-                    self.conf['print_alert'] = True
                 elif opt in ("-R"):
                     self.conf['print_report'] = True
-                elif opt in ("-G"):
+                elif opt in ("-P"):
                     self.conf['print_scraping'] = True
                 elif opt in ("-M"):
                     self.conf['print_market'] = True
-                elif opt in ("-P"):
+                elif opt in ("-G"):
                     self.conf['print_graph'] = True
-                elif opt in ("-C"):
-                    self.conf['print_calcul'] = True
+                elif opt in ("-A"):
+                    self.conf['print_alert'] = True
+                elif opt in ("-D"):
+                    self.conf['print_alert_graph'] = True
                 elif opt in ("-F"):
                     self.conf['print_file'] = True
                 elif opt in ("-S"):
@@ -87,15 +91,15 @@ class Standard(object):
               '-l / --limit= <row limit> / define the limit to use during the market collection'
               '-n / --collect_name= <name> / define the name for this collection'
               '-u / --collect_url= <url to collect> / define the url to reach to collect the info'
-              '-A / -- / display the alert'
+              '-G / -- / graph the collection'
+              '-A / -- / display the alert info (values of variation)'
+              '-D / -- / graph the alert'
               '-R / -- / display the report info'
-              '-G / -- / display the scraping info'
+              '-P / -- / display the scraping info'
               '-M / -- / display the market info'
-              '-P / -- / enable and display the graph creation and update'
-              '-C / -- / display the calcu info'
               '-F / -- / display the file info'
-              '-S / -- / save the scraping output in file'
-              '-O / -- / CSV files loader'
+              '-S / -- / save the scraping output in file (compilation, one CSV file by collected entry)'
+              '-O / -- / CSV files loader (history)'
               )
 
     def debug(self, clas, fct, data = None):

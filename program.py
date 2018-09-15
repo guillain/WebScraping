@@ -12,6 +12,7 @@ from configparser import ConfigParser
 config = ConfigParser()
 config.read('config.ini')
 
+
 def main(argv):
     app = App(config._sections['app'], argv)
 
@@ -22,8 +23,12 @@ def main(argv):
         t_display = threading.Thread(name='app.display', target=app.display)
         t_display.start()
 
+        t_alerting = threading.Thread(name='app.alerting', target=app.alerting)
+        t_alerting.start()
+        
     except KeyboardInterrupt:
         print('Manual break by user')
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
