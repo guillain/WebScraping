@@ -44,6 +44,10 @@ This include also parameters not available by the CLI like the thresholds for th
 * alert_price_threshold
 * alert_volume_threshold
 
+### Default configuration
+Default configuration is done to raise graph and text alert when alert thresholds is reached.
+The alert is the result of the variance of the overwall data collected for the same item. 
+
 
 ## Execution
 Short and with the default parameters
@@ -132,6 +136,12 @@ c) app execution
 d) stop the execution
 - press Ctrl + C
 
+
+## Tips
+As the math used is the variance of all data collected, for fresh stats it's easier to start without loading old data (blank array).
+In that case the variance checking will start will the same valeurs tocompare so a result of 0 without alert according to the htrshold values. 
+
+Additionally, the graph can be used to see the pic when it happens. 
 
 ## Traces
 ```
