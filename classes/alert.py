@@ -1,4 +1,5 @@
 from classes.graph import Graph
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -10,12 +11,6 @@ class Alert(Graph):
 
         self.calc_data = {}
         self.market_data = {}
-
-    def display(self, data):
-        self.debug("alert", "display")
-
-        for line in data:
-            print("alert", "display", line, data[line])
 
     def display_calc(self):
         self.debug("alert", "display_calc")
@@ -55,7 +50,6 @@ class Alert(Graph):
 
             line_calc = np.array([prices, volumes]).astype(np.float)
             self.calc_data[name] = np.var(line_calc,1)
-            print(name, self.calc_data[name])
 
             if (self.calc_data[name][0] > self.conf['alert_price_threshold']) \
                     or (self.calc_data[name][1] > self.conf['alert_volume_threshold']):

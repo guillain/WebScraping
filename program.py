@@ -7,8 +7,10 @@ import sys
 import threading
 from classes.app import App
 
-#from ConfigParser import ConfigParser
-from configparser import ConfigParser
+if sys.version_info[0] == 2:
+    from ConfigParser import ConfigParser
+else:
+    from configparser import ConfigParser
 config = ConfigParser()
 config.read('config.ini')
 

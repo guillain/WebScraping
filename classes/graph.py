@@ -11,19 +11,19 @@ class Graph(Standard):
         self.debug("graph", "__init__")
 
     def init(self):
-        self.figure = plt.figure()
+        figure = plt.figure()
 
         plt.ion()
         plt.show()
 
-        ax = self.figure.add_subplot(211)
+        ax = figure.add_subplot(211)
         plt.subplot(211)
         plt.xlabel('Timestamp')
         plt.ylabel('Price')
         plt.title('Top of Price')
         # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
-        ay = self.figure.add_subplot(212)
+        ay = figure.add_subplot(212)
         plt.subplot(212)
         plt.xlabel('Timestamp')
         plt.ylabel('Volume')
@@ -31,6 +31,12 @@ class Graph(Standard):
         # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
         self.plt = plt
+
+    def display(self):
+        self.debug("alert", "display")
+
+        for line in self.data:
+            print("alert", "display", line, self.data[line])
 
     def display_file(self, file, reports):
         self.debug("graph", "display_file")
@@ -67,7 +73,7 @@ class Graph(Standard):
         self.debug("graph", "trace")
 
         for market in markets:
-            print("graph", "trace", market, markets[market])
+            #print("graph", "trace", market, markets[market])
 
             dates = []
             prices = []
