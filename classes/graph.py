@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from classes.standard import Standard
 
-class Plot(Standard):
+class Graph(Standard):
     def __init__(self, default, argv):
         Standard.__init__(self, default, argv)
-        self.debug("plot", "__init__")
+        self.debug("graph", "__init__")
 
+    def init(self):
         self.figure = plt.figure()
 
         plt.ion()
@@ -20,7 +21,7 @@ class Plot(Standard):
         plt.title('Top of Price')
         # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
-        ax = self.figure.add_subplot(212)
+        ay = self.figure.add_subplot(212)
         plt.subplot(212)
         plt.xlabel('Timestamp')
         plt.ylabel('Volume')
@@ -30,7 +31,7 @@ class Plot(Standard):
         self.plt = plt
 
     def display_file(self, file, reports):
-        self.debug("plot", "display")
+        self.debug("graph", "display")
         for index, report in enumerate(reports):
             timestamp, names, symbols, marketcaps, prices, volumes = \
                 np.loadtxt('{}/{}{}'.format(self.conf['report_dir'], report.get('name'), file),
@@ -60,10 +61,12 @@ class Plot(Standard):
         self.plt.draw_all()
         self.plt.pause(.001)
 
-    def graph(self, markets):
-        self.debug("plot", "graph")
+    def trace(self, markets):
+        self.debug("graph", "trace")
+
         for market in markets:
-            print("market", market, "markets[market]", markets[market])
+            print("graph", "trace", market, markets[market])
+
             dates = []
             prices = []
             volumes = []

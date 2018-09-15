@@ -15,7 +15,7 @@ class Standard(object):
         self.conf['print_report'] = int(default["print_report"])
         self.conf['print_scraping'] = int(default["print_scraping"])
         self.conf['print_market'] = int(default["print_market"])
-        self.conf['print_plot'] = int(default["print_plot"])
+        self.conf['print_graph'] = int(default["print_graph"])
         self.conf['print_calcul'] = int(default["print_calcul"])
         self.conf['print_file'] = int(default["print_file"])
         self.conf['report_dir'] = default["report_dir"]
@@ -62,7 +62,7 @@ class Standard(object):
                 elif opt in ("-M"):
                     self.conf['print_market'] = True
                 elif opt in ("-P"):
-                    self.conf['print_plot'] = True
+                    self.conf['print_graph'] = True
                 elif opt in ("-C"):
                     self.conf['print_calcul'] = True
                 elif opt in ("-F"):
