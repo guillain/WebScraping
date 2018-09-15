@@ -1,32 +1,37 @@
 #!/bin/python
-# @Subject: WebScraping : CSV record : Graph
-# @Author: Guillain
-# @Email: guillain@gmail.com
-
 import sys
 import time
 import getopt
 
-from classes.standard import Standard
-from classes.report import Report
-from classes.scraping import Scraping
-from classes.plot import Plot
-from classes.market import Market
-from classes.calcul import Calcul
-
-class App(Standard):
+class Standard(object):
     def __init__(self, default, argv):
-        Standard.__init__(self, default, argv)
-        self.report = Report(default, argv)
-        self.scraping = Scraping(default, argv)
-        self.market = Market(default, argv)
-        self.calcul = Calcul(default, argv)
-        if self.conf['print_plot']: self.plot = Plot(default, argv)
-        if self.conf['load_file']: self.market.data = self.report.get()
-        if self.conf['print_file']: self.report.display_file_list()
+        self.data = {}
+        self.conf = {}
+        self.conf['debug'] = int(default["debug"])
+        self.conf['row_limit'] = int(default["row_limit"])
+        self.conf['loop_timer_display'] = int(default["loop_timer_display"])
+        self.conf['loop_timer_collector'] = int(default["loop_timer_collector"])
+        self.conf['print_alert'] = int(default["print_alert"])
+        self.conf['print_report'] = int(default["print_report"])
+        self.conf['print_scraping'] = int(default["print_scraping"])
+        self.conf['print_market'] = int(default["print_market"])
+        self.conf['print_plot'] = int(default["print_plot"])
+        self.conf['print_calcul'] = int(default["print_calcul"])
+        self.conf['print_file'] = int(default["print_file"])
+        self.conf['report_dir'] = default["report_dir"]
+        self.conf['file'] = default["file"]
+        self.conf['load_file'] = int(default["load_file"])
+        self.conf['save_file'] = int(default["save_file"])
+        self.conf['collect_name'] = default["collect_name"]
+        self.conf['collect_url'] = default["collect_url"]
+
+        self.debug("standard","__init__")
+
+        self.init_params(argv)
 
     def init_params(self, argv):
-        self.debug("app","init_params")
+        self.debug("standard","init_params")
+
         try:
             opts, args = getopt.getopt(argv, "hd:f:t:l:n:c:ARGMPCFSO",
                                        ["help", "debug", "dir", "file=", "timer=", "limit=", "collect_name=", "collect_url="])
@@ -71,7 +76,7 @@ class App(Standard):
             sys.exit(2)
 
     def help(self):
-        self.debug("app","help")
+        self.debug("standard","help")
 
         print('program.py '
               '-h // --help '
@@ -93,38 +98,13 @@ class App(Standard):
               '-O / -- / CSV files loader'
               )
 
-    def collector(self):
-        self.debug("app","collector")
+    def debug(self, clas, fct, data = None):
+        if self.conf['debug']:
+            print(">>>>>",clas," - ", fct, " - ", data)
 
-        try:
-            while True:
-                self.conf['time_done_collector'] = time.time() + self.conf['loop_timer_collector']
+    def timer(self, time_done):
+        self.debug("standard", "timer")
 
-                scraping_data = self.scraping.get(self.scraping.get_html(), self.conf['row_limit'])
-                self.report.save(scraping_data)
-
-                market_data = self.market.data_mapping(scraping_data)
-                calc_data = self.calcul.calc(market_data)
-
-                self.timer(self.conf['time_done_collector'])
-        except KeyboardInterrupt:
-            print('Manual break by user')
-
-    def display(self):
-        self.debug("app","display")
-
-        try:
-            while True:
-                self.conf['time_done_display'] = time.time() + self.conf['loop_timer_display']
-
-                if self.conf['print_alert']: self.calcul.alert()
-                if self.conf['print_scraping']: self.scraping.display()
-                if self.conf['print_report']: self.report.display()
-                if self.conf['print_market']: self.market.display()
-                if self.conf['print_calcul']: self.calcul.display()
-                if self.conf['print_plot']: self.plot.graph(self.market.data)
-                # if self.conf.get('print_plot'): self.plot.display_file(self.report.file, self.scraping.data)
-
-                self.timer(self.conf['time_done_display'])
-        except KeyboardInterrupt:
-            print('Manually stopped')
+        while time.time() < time_done:
+            self.debug("standard", "timer", time.strftime("%Y-%m-%d %H:%M:%S"))
+            time.sleep(1)

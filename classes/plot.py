@@ -1,10 +1,11 @@
 from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
+from classes.standard import Standard
 
-class Plot:
-    def __init__(self, conf):
-        self.conf = conf
+class Plot(Standard):
+    def __init__(self, default, argv):
+        Standard.__init__(self, default, argv)
         self.debug("plot", "__init__")
 
         self.figure = plt.figure()
@@ -79,7 +80,3 @@ class Plot:
 
         self.plt.draw_all()
         self.plt.pause(.001)
-
-    def debug(self, clas, fct, data=None):
-        if self.conf['debug']:
-            print(">>>>>", clas, " - ", fct, " - ", data)

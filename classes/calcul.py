@@ -1,19 +1,23 @@
 import numpy as np
+from classes.standard import Standard
 
-class Calcul:
-    def __init__(self, conf):
-        self.conf = conf
+class Calcul(Standard):
+    def __init__(self, default, argv):
+        Standard.__init__(self, default, argv)
+
         self.debug("calcul", "__init__")
 
         self.data = {}
 
     def display(self):
         self.debug("calcul", "display")
+
         for data in self.data:
             print("calcul.display", data, self.data[data])
 
     def alert(self):
         self.debug("calcul", "alert")
+
         res_found = False
         for data in self.data:
             res = ''
@@ -32,6 +36,7 @@ class Calcul:
 
     def calc(self, data):
         self.debug("calcul", "calc")
+
         for calc in data:
             name = 'Nones'
             prices = []
@@ -44,7 +49,3 @@ class Calcul:
             line_calc = np.array([prices, volumes]).astype(np.float)
             self.data[name] = np.var(line_calc,1)
         return self.data
-
-    def debug(self, clas, fct, data = None):
-        if self.conf['debug']:
-            print(">>>>>",clas," - ", fct, " - ", data)

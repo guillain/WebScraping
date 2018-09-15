@@ -1,13 +1,15 @@
-import numpy as np
+from classes.standard import Standard
 
-class Market:
-    def __init__(self, conf):
-        self.conf = conf
+class Market(Standard):
+    def __init__(self, default, argv):
+        Standard.__init__(self, default, argv)
+
         self.debug("market", "__init__")
         self.data = {}
 
     def display(self):
         self.debug("market", "display")
+
         for market in self.data:
             market_line = self.data[market]
             for line in self.data[market]:

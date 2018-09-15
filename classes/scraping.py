@@ -2,15 +2,25 @@ import re
 import time
 import bs4
 import requests
+from classes.standard import Standard
 
-class Scraping:
-    def __init__(self, conf):
-        self.conf = conf
+class Scraping(Standard):
+    def __init__(self, default, argv):
+        Standard.__init__(self, default, argv)
+
         self.debug("scraping", "__init__")
+
         self.data = []
+
+    def display(self):
+        self.debug("scraping", "display")
+
+        for line in self.data:
+            print("scraping.display", line)
 
     def get_html(self):
         self.debug("scraping", "get_html")
+
         response = requests.get(self.conf['collect_url'])
         return response.text
 
@@ -47,12 +57,3 @@ class Scraping:
         text = re.sub('[^A-Za-z0-9\.]+', '', text)
 
         return text
-
-    def display(self):
-        self.debug("scraping", "display")
-        for line in self.data:
-            print("scraping.display", line)
-
-    def debug(self, clas, fct, data = None):
-        if self.conf['debug']:
-            print(">>>>>", clas, " - ", fct, " - ", data)
