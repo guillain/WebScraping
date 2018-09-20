@@ -19,8 +19,8 @@ class Standard(object):
         self.conf['print_graph'] = int(default["print_graph"])
         self.conf['print_alert'] = int(default["print_alert"])
         self.conf['print_alert_graph'] = int(default["print_alert_graph"])
-        self.conf['alert_price_threshold'] = int(default["alert_price_threshold"])
-        self.conf['alert_volume_threshold'] = int(default["alert_volume_threshold"])
+        self.conf['alert_price_threshold'] = float(default["alert_price_threshold"])
+        self.conf['alert_volume_threshold'] = float(default["alert_volume_threshold"])
         self.conf['print_file'] = int(default["print_file"])
         self.conf['report_dir'] = default["report_dir"]
         self.conf['file'] = default["file"]
