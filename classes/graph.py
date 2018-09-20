@@ -24,7 +24,7 @@ class Graph(Standard):
         plt.title('Top of Price')
 
         ay = figure.add_subplot(212)
-        plt.subplot(212)
+        plt.subplot(223)
         plt.xlabel('Timestamp')
         plt.ylabel('Volume')
         plt.title('Top of Volume')
@@ -86,7 +86,7 @@ class Graph(Standard):
             ##market_date_sorted = sorted(markets[market].items(), key=lambda p: p[1], reverse=True)
             #print("market_date_sorted",market_date_sorted)
             for line in markets[market]:
-                if counter < 1000:
+                if counter < 100:
                     dates.append(line.get("timestamp"))
                     prices.append(line.get("price"))
                     volumes.append(line.get("volume"))
