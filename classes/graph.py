@@ -78,6 +78,7 @@ class Graph(Standard):
 
         self.plt.clf()
         self.screen()
+
         for market in markets:
             #print("graph", "trace", market, markets[market])
 
