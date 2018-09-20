@@ -52,7 +52,7 @@ class Alert(Graph):
             self.calc_data[name] = np.var(line_calc,1)
 
             if (self.calc_data[name][0] > self.conf['alert_price_threshold']) \
-                    or (self.calc_data[name][1] > self.conf['alert_volume_threshold']):
+                    and (self.calc_data[name][1] > self.conf['alert_volume_threshold']):
                 self.market_data[name] = data[calc]
 
         return self.calc_data
