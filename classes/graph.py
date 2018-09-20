@@ -18,18 +18,20 @@ class Graph(Standard):
         plt.show()
 
         ax = figure.add_subplot(211)
-        plt.subplot(211)
-        plt.xlabel('Timestamp')
-        plt.ylabel('Price')
-        plt.title('Top of Price')
-
-        ay = figure.add_subplot(212)
-        plt.subplot(223)
-        plt.xlabel('Timestamp')
-        plt.ylabel('Volume')
-        plt.title('Top of Volume')
+        ay = figure.add_subplot(223)
 
         self.plt = plt
+
+    def screen(self):
+        self.plt.subplot(211)
+        self.plt.xlabel('Timestamp')
+        self.plt.ylabel('Price')
+        self.plt.title('Top of Price')
+
+        self.plt.subplot(223)
+        self.plt.xlabel('Timestamp')
+        self.plt.ylabel('Volume')
+        self.plt.title('Top of Volume')
 
     def display(self):
         self.debug("alert", "display")
@@ -62,7 +64,7 @@ class Graph(Standard):
             self.plt.subplot(211)
             self.plt.plot(timestamp, prices, label = report.get('name'))
 
-            self.plt.subplot(212)
+            self.plt.subplot(223)
             self.plt.plot(timestamp, volumes, label = report.get('name'))
 
         self.plt.draw_all()
@@ -75,6 +77,7 @@ class Graph(Standard):
             return
 
         self.plt.clf()
+        self.screen()
         for market in markets:
             #print("graph", "trace", market, markets[market])
 
