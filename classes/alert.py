@@ -15,29 +15,19 @@ class Alert(Graph):
     def display_calc(self):
         self.debug("alert", "display_calc")
 
-        res_found = False
-        for data in self.calc_data:
-            if data in self.calc_data:
-                res = ''
-                var_prices, var_volumes = self.calc_data[data]
-
-                if var_prices > self.conf['alert_price_threshold']:
-                    res += "- Prices alert: {} ".format(var_prices)
-
-                if var_volumes > self.conf['alert_volume_threshold']:
-                    res += "- Volumes alert: {} ".format(var_volumes)
-
-                if res not in '':
-                    res_found = True
-                    print('{} {}'.format(data, res))
-
-        if res_found:
-            print()
-        else:
+        if self.calc_data in (None, {}):
             print("No variation found")
+            return
+
+        for name in self.calc_data:
+            var_prices, var_volumes = self.calc_data[name]
+            print('{} - Prices alert: {} - Volumes alert: {}'.format(name, var_prices, var_volumes))
 
     def calc(self, data):
         self.debug("alert", "calc")
+
+        self.calc_data = {}
+        self.market_data = {}
 
         for calc in data:
             name = 'Nones'
@@ -49,10 +39,10 @@ class Alert(Graph):
                 volumes.append(line.get("volume"))
 
             line_calc = np.array([prices, volumes]).astype(np.float)
-            self.calc_data[name] = np.var(line_calc,1)
+            var_res = np.var(line_calc,1)
 
-            if (self.calc_data[name][0] > self.conf['alert_price_threshold']) \
-                    and (self.calc_data[name][1] > self.conf['alert_volume_threshold']):
+            if (var_res[0] > self.conf['alert_price_threshold']) and (var_res[1] > self.conf['alert_volume_threshold']):
+                self.calc_data[name] = var_res
                 self.market_data[name] = data[calc]
 
         return self.calc_data
