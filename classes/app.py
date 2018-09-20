@@ -71,7 +71,6 @@ class App(Standard):
 
                 self.alert.calc(self.market.data)
                 if self.conf['print_alert']: self.alert.display_calc()
-                #self.alert.display(self.alert.market_data)
                 if self.conf['print_alert_graph']: self.alert.trace(self.alert.market_data)
 
                 self.timer(self.conf['time_done_alert'])
