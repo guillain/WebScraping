@@ -60,30 +60,28 @@ class Report(Standard):
     def save_header(self, filename):
         self.debug("report", "save_header")
 
-        if self.conf['save_file']:
-            with open(filename, 'w') as f:
-                f.write('{},{},{},{},{},{}\n'.format(
-                    "timestamp",
-                    "name",
-                    "symbol",
-                    "marketcap",
-                    "price",
-                    "volume"
-                ))
+        with open(filename, 'w') as f:
+            f.write('{},{},{},{},{},{}\n'.format(
+                "timestamp",
+                "name",
+                "symbol",
+                "marketcap",
+                "price",
+                "volume"
+            ))
 
     def save_content(self, filename, report):
         self.debug("report", "save_content")
 
-        if self.conf['save_file']:
-            with open(filename, 'a') as f:
-                f.write('{},{},{},{},{},{}\n'.format(
-                    report.get("timestamp"),
-                    report.get("name"),
-                    report.get("symbol"),
-                    report.get("marketcap"),
-                    report.get("price"),
-                    report.get("volume")
-                ))
+        with open(filename, 'a') as f:
+            f.write('{},{},{},{},{},{}\n'.format(
+                report.get("timestamp"),
+                report.get("name"),
+                report.get("symbol"),
+                report.get("marketcap"),
+                report.get("price"),
+                report.get("volume")
+            ))
 
     def save(self, reports):
         self.debug("report", "save")

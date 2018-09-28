@@ -34,8 +34,8 @@ class App(Standard):
                 self.conf['time_done_collector'] = time.time() + self.conf['loop_timer_collector']
 
                 scraping_data = self.scraping.get(self.scraping.get_html(), self.conf['row_limit'])
-                market_data = self.market.data_mapping(scraping_data)
                 self.report.save(scraping_data)
+                market_data = self.market.data_mapping(scraping_data)
 
                 self.timer(self.conf['time_done_collector'])
         except KeyboardInterrupt:

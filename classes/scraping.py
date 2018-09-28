@@ -35,6 +35,8 @@ class Scraping(Standard):
         rows = table_body.find_all('tr')
         index = 0
 
+        self.data = []
+
         for row in rows:
             data = {}
             data["timestamp"] = time.strftime('%Y-%m-%d %H:%M:%S', timestamp)
