@@ -2,11 +2,7 @@
 # @Subject: WebScraping : CSV record : Graph
 # @Author: Guillain
 # @Email: guillain@gmail.com
-
-import sys
 import time
-import getopt
-
 from classes.standard import Standard
 from classes.report import Report
 from classes.scraping import Scraping
